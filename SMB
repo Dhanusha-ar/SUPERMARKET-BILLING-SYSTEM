@@ -1,0 +1,175 @@
+import java.awt.*;
+import java.applet.*;
+import java.awt.event.*;
+import java.awt.Color;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
+/*
+<applet code="SMB" width="1500" height="1500"></applet> */
+public class SMB extends Applet implements ActionListener{
+TextField tf1,tf2,tf3,tf4,tf5,tf6,tf7;
+Button submit;
+Choice ch1,ch2,ch3;
+public void init(){
+setBackground(Color.orange);
+Label topicname = new Label("SMB SUPER MARKET ");
+Label personal = new Label("CUSTOMER DETAILS ");
+Label billing = new Label("BILLING SYSTEM");
+Label customername = new Label("CUSTOMER NAME");
+tf1 =new TextField();
+Label phonenumber = new Label("PHONENUMBER");
+tf2 =new TextField();
+
+Label product= new Label("PRODUCT");
+tf3 =new TextField();
+ch1 = new Choice();
+ch1.add("wheat flour");
+ch1.add("biscuit");
+ch1.add("facewash");
+ch1.add("pen");
+Label quantity = new Label("QUANTITY");
+tf4 =new TextField();
+
+ch2 = new Choice();
+ch2.add("1");
+ch2.add("2");
+ch2.add("3");
+ch2.add("4");
+
+Label timeofbilling = new Label("TIME OF BILLING");
+tf5 =new TextField();
+Label paymentmode = new Label("PAYMENT MODE");
+tf6 =new TextField();
+ch3 = new Choice();
+ch3.add("Cash");
+ch3.add("Card");
+Label cashiername = new Label("CASHIER NAME");
+tf7 =new TextField();
+
+submit = new Button("SUBMIT");
+submit.setBackground(Color.gray);
+setLayout(null);
+topicname.setBounds(350,5,200,30);
+personal.setBounds(350,45,200,30);
+billing.setBounds(350,180,200,30);
+customername.setBounds(50,80,120,30);
+tf1.setBounds(200,85,120,20);
+phonenumber.setBounds(500,80,120,30);
+tf2.setBounds(650,85,120,20);
+product.setBounds(50,270,120,30);
+ch1.setBounds(200,275,120,30);
+quantity.setBounds(50,300,120,30);
+ch2.setBounds(200,305,120,30);
+
+timeofbilling.setBounds(500,270,120,30);
+tf5.setBounds(650,275,120,20);
+paymentmode.setBounds(500,300,120,30);
+ch3.setBounds(650,305,120,30);
+cashiername.setBounds(500,330,120,30);
+tf7.setBounds(650,335,120,30);
+submit.setBounds(350,450,120,40);
+add(topicname);
+add(personal);
+add(billing);
+add(customername);
+add(phonenumber);
+add(product);
+add(quantity);
+
+add(timeofbilling);
+add(paymentmode);
+add(cashiername);
+add(tf1);
+add(tf2);
+add(tf3);
+add(tf4);
+add(tf5);
+add(tf6);
+add(tf7);
+add(ch1);
+add(ch2);
+add(ch3);
+add(submit);
+Add_ActionListener();
+setFont(new Font("Elephant",Font.PLAIN,14));
+}
+public void actionPerformed(ActionEvent ae)
+{
+String d_cname = tf1.getText(),d_phno=tf2.getText(),d_product=ch1.getItem(ch1.getSelectedIndex()), d_quantity=ch2.getItem(ch2.getSelectedIndex()),d_tob = tf5.getText(),d_pm = ch3.getItem(ch3.getSelectedIndex()),d_cm = tf7.getText();
+
+String message = ae.getActionCommand();
+database(d_cname,d_phno,d_product,d_quantity,d_tob,d_pm,d_cm);
+repaint();
+}
+public void Add_ActionListener()
+{
+tf1.addActionListener(this);
+tf2.addActionListener(this);
+tf3.addActionListener(this);
+tf4.addActionListener(this);
+tf5.addActionListener(this);
+tf6.addActionListener(this);
+tf7.addActionListener(this);
+
+submit.addActionListener(this);
+}
+public void database(String d_cname,String d_phno,String d_product,String d_quantity,String
+d_tob,String d_pm,String d_cm){
+String url="jdbc:mysql://localhost:3306/billing";
+String uname="root";
+String pass="Ravipavi@123";
+try {
+Class.forName("com.mysql.jdbc.Driver");
+} catch (ClassNotFoundException ex) {
+Logger.getLogger(SMB.class.getName()).log(Level.SEVERE, null, ex);
+
+}
+String query = "insert into bill values(?,?,?,?,?,?,?)";
+try (Connection con = DriverManager.getConnection(url, uname, pass)) {
+PreparedStatement st = con.prepareStatement(query);
+st.setString(1, d_cname.toUpperCase().trim());
+st.setString(2, d_phno.toUpperCase().trim());
+st.setString(3, d_product);
+st.setString(4, d_quantity);
+st.setString(5, d_tob.toUpperCase().trim());
+st.setString(6, d_pm);
+st.setString(7, d_cm.toUpperCase().trim());
+int count = st.executeUpdate();
+result(d_cname,d_phno,d_product,d_quantity,d_tob,d_pm,d_cm);
+JOptionPane.showMessageDialog(null,"Billing Successfull!");
+st.close();
+}catch(Exception e){System.out.println(e);
+}
+}
+public void paint(Graphics g){
+}
+public void result(String d_cname,String d_phno,String d_product,String d_quantity,String d_tob,String
+d_pm,String d_cm){
+Label detail = new Label ("Billing Details");
+Label cname=new Label("CustomerName :"+d_cname);
+Label phno = new Label ("phone number :"+d_phno);
+Label product = new Label ("product :"+d_product);
+Label quantity = new Label ("quantity :"+d_quantity);
+Label tob= new Label ("Time of billing :"+d_tob);
+Label pm= new Label ("Payment mode :"+d_pm);
+Label cm= new Label ("Cashier name :"+d_cm);
+detail.setBounds(980,30,300,20);
+cname.setBounds(1000,80,300,20);
+phno.setBounds(1000,120,300,20);
+product.setBounds(1000,160,300,20);
+quantity.setBounds(1000,200,300,20);
+tob.setBounds(1000,240,300,20);
+pm.setBounds(1000,280,300,20);
+cm.setBounds(1000,320,300,20);
+add(detail);
+add(cname);
+add(phno);
+add(product);
+add(quantity);
+add(tob);
+add(pm);
+add(cm);
+}
+}
